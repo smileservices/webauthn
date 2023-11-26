@@ -1,0 +1,10 @@
+version: "3.7"
+
+services:
+  webauthn-nginx:
+    build: nginx/
+    ports:
+      - "8005:80"
+    volumes:
+      - ../frontend/static/:/www-data/static
+    restart: always

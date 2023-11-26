@@ -1,0 +1,22 @@
+{% set STATIC_ROUTE = "http://localhost:8005/static" %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h1>WebAuthN</h1>
+
+<div id="app"></div>
+
+
+<script>
+    const STATIC_ROUTE = "{{STATIC_ROUTE}}";
+</script>
+
+<script src="{{ STATIC_ROUTE }}/js/react-bundle.js"></script>
+<script src="{{ STATIC_ROUTE }}/js/auth-app.js"></script>
+</body>
+</html>
