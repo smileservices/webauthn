@@ -1,0 +1,13 @@
+localhost
+
+tls internal
+
+route {
+
+  file_server /static/* {
+    # Requests for static files will look in whatever is mounted to /usr/share/caddy/static
+    root /usr/share/caddy
+  }
+
+  reverse_proxy localhost:8001
+}

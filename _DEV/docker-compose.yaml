@@ -1,10 +1,21 @@
 version: "3.7"
 
 services:
-  webauthn-nginx:
-    build: nginx/
-    ports:
-      - "8005:80"
+
+  webauthn-caddy:
+    image: caddy:2.6.1-alpine
+    restart: unless-stopped
     volumes:
-      - ../frontend/static/:/www-data/static
-    restart: always
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ../frontend/static:/usr/share/caddy/static
+    environment:
+      - localhost
+    network_mode: "host"
+
+#  webauthn-nginx:
+#    build: nginx/
+#    ports:
+#      - "8005:80"
+#    volumes:
+#      - ../frontend/static/:/www-data/static
+#    restart: always

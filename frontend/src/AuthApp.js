@@ -1,7 +1,8 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 import {startRegistration, startAuthentication} from "@simplewebauthn/browser";
 import {client} from '@passwordless-id/webauthn';
+import {POST} from "./reusables/requests";
 
 const base64Encode = (str) => btoa(String.fromCharCode.apply(null, new TextEncoder().encode(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 const challenge = "randomChallenge";
@@ -107,44 +108,34 @@ const mockWebAuthnAuthenticateParams = {
 };
 
 
-
-async function register() {
-    const options = mockGenerateRegistrationOptions();
-    startRegistration(options).then(result => console.log(result));
+async function register(state) {
+    const options = await fetch("/generate-register-options", {
+            method: "POST",
+            body: JSON.stringify({user_name: state.user_name}),
+            headers: {"Content-Type": "application/json"},
+        }).then(res => res.json());
+    const result = await startRegistration(options);
+    const verify_reg = await fetch("/verify-register", {
+        method: "POST",
+        body: JSON.stringify({username: state.user_name, response: result})
+    }).then(res => res.json());
+    console.log("Verified response:", verify_reg);
 }
 
-async function authenticate() {
+async function authenticate(state) {
     const options = mockPublicKeyCredentialRequestOptions();
     startAuthentication(options).then(result => console.log(result));
 }
 
-async function registerVanilla() {
-    // Call to navigator.credentials.create() with these parameters
-    navigator.credentials.create(mockWebAuthnRegisterParams).then(credential => {
-        // Handle the credential response
-        console.log(credential);
-    }).catch(error => {
-        // Handle errors
-        console.error(error);
-    });
-}
-
-async function authenticateVanilla() {
-// Call to navigator.credentials.get() with these parameters
-    navigator.credentials.get(mockWebAuthnAuthenticateParams).then(assertion => {
-        // Handle the assertion response
-        console.log(assertion);
-    }).catch(error => {
-        // Handle errors
-        console.error(error);
-    });
-}
-
 function AuthApp() {
+    const [state, setState] = useState({});
     return <div className="app">
         <h3>Use FIDO2:WebAuthn</h3>
-        <button onClick={register}>Register</button>
-        <button onClick={authenticate}>Authenticate</button>
+        <input type="text" name="user" value={state.user_name}
+               onChange={e => setState({...state, user_name: e.target.value})}
+        />
+        <button onClick={e=>register(state)}>Register</button>
+        <button onClick={e=>authenticate(state)}>Authenticate</button>
     </div>
 }
 

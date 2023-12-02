@@ -4,7 +4,10 @@ module.exports = (env, argv) => ({
         'react-dom': 'ReactDOM',
     },
     entry: {
-        // just create the react-bundle once
+        //for dev
+        // '/js/react-bundle': argv.mode === 'production'
+        //     ? ['./static/react_files/react.min.js', './static/react_files/react-dom.min.js']
+        //     : ['./static/react_files/react.development.js', './static/react_files/react-dom.development.js'],
         '/js/auth-app': './src/AuthApp.js',
     },
     output: {
